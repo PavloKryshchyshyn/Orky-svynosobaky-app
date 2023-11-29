@@ -16,13 +16,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // By default today is selected
   DateTime _selectedDate = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     final date = _formatter.format(_selectedDate);
 
     return Scaffold(
+      backgroundColor: Color(0xFF43424b),
       body: SafeArea(
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text(date)),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(),//height: 32),
             // TODO: Display war stats
             FutureBuilder(
                 future: getStats(date),
@@ -67,12 +68,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   final data = snapshot.data!;
 
                   return Center(
-                    child: Text(
-                      "Здохло: ${data[0]}",
-                      style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                    child: Column(
+                      children: [
+                        Padding(padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Здохло: ${data[0]} орків",
+                        softWrap: true,
+                        style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD7D7D7)),
+
+                      ),
+                      ),
+                        Padding(padding: EdgeInsets.all(8.0),
+                          child:
+                        Text(
+                          "Згоріло: ${data[1]} танків",
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFD7D7D7)),
+                              softWrap: true,
+                        ),),
+                  Padding(padding: EdgeInsets.all(8.0),
+                  child:
+                        Text(
+                          "Згоріло: ${data[2]} бойових броньованих машин",
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFD7D7D7)),
+                              softWrap: true,
+                        ),),
+                      ],
                     ),
                   );
                 })
@@ -88,8 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final uri = Uri.parse("$url/statistics/$date");
     final response = await get(uri);
     final json = jsonDecode(response.body);
-    print(json);
+    //print(json);
     final personnel = json['data']['stats']['personnel_units'] as int;
-    return [personnel];
+    final tanks = json['data']['stats']['tanks'] as int;
+    final planes = json['data']['stats']['planes'] as int;
+    return [personnel, tanks, planes];
   }
 }
